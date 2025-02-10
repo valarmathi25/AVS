@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Availability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            width: 100%;
+            min-height: calc(100vh - 70px); /* Account for navbar height */
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #2d3748;
+            transform: translateX(-5px);
+        }
+
+        .availability-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            max-height: calc(100vh - 140px); /* Account for navbar and padding */
+        }
+
+        h1 {
+            color: #2d3748;
+            margin: 0 0 1.5rem 0;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logger-grid {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+            margin: -0.4rem;
+            padding: 0.4rem;
+        }
+
+        .logger-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .logger-grid::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .logger-grid::-webkit-scrollbar-thumb {
+            background: #c5c5c5;
+            border-radius: 3px;
+        }
+
+        .logger-grid::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .logger-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            min-height: 60px;
+        }
+
+        .logger-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logger-name {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .logger-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.8rem;
+        }
+
+        .logger-status {
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        /* Status styles */
+        .status-leave-today {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .status-morning-half {
+            background: #fefcbf;
+            color: #975a16;
+        }
+
+        .status-afternoon-half {
+            background: #feebc8;
+            color: #9c4221;
+        }
+
+        .status-one-hour {
+            background: #bee3f8;
+            color: #2b6cb0;
+        }
+
+        .status-45-min {
+            background: #c6f6d5;
+            color: #2f855a;
+        }
+
+        .status-30-min {
+            background: #e9d8fd;
+            color: #553c9a;
+        }
+
+        .status-15-min {
+            background: #b2f5ea;
+            color: #285e61;
+        }
+
+        .status-2-days {
+            background: #fc8181;
+            color: #9b2c2c;
+        }
+
+        .status-weekend {
+            background: #d6bcfa;
+            color: #553c9a;
+        }
+
+        .status-out-time {
+            background: #cbd5e0;
+            color: #2d3748;
+        }
+
+        .no-loggers {
+            text-align: center;
+            color: #718096;
+            font-size: 1rem;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .no-loggers i {
+            font-size: 2.5rem;
+            color: #a0aec0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-info button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info button:hover {
+            color: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 2rem auto;
+            }
+
+            .availability-container {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .logger-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .logger-info {
+                width: 100%;
+                align-items: stretch;
+            }
+
+            .logger-status {
+                width: 100%;
+            }
+        }
+    </style>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dash.html" class="logo">
+            <i class="fas fa-user-clock"></i>
+            Faculty Dashboard
+        </a>
+        <div class="user-info">
+            <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="dash.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="availability-container">
+            <h1>Logger Status</h1>
+            <div id="facultyGrid" class="logger-grid">
+                <!-- Logger items will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            // Clear any user session data from localStorage if needed
+            if (localStorage.getItem('userEmail')) {
+                localStorage.removeItem('userEmail');
+            }
+            // Redirect to login page
+            window.location.href = 'index.html';
+        }
+
+        // Initialize empty loggers array in localStorage if it doesn't exist
+        if (!localStorage.getItem('loggers')) {
+            localStorage.setItem('loggers', JSON.stringify([]));
+        }
+
+        function refreshAvailability() {
+            const loggerGrid = document.querySelector('.logger-grid');
+            loggerGrid.innerHTML = '';
+
+            const loggers = JSON.parse(localStorage.getItem('loggers')) || [];
+
+            if (loggers.length === 0) {
+                loggerGrid.innerHTML = `
+                    <div class="no-loggers">
+                        <i class="fas fa-inbox"></i>
+                        <p>No loggers found. Add a logger to start tracking availability.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            loggers.forEach(logger => {
+                let statusClass = '';
+                const status = logger.status; // Use the stored status
+
+                if (status === 'Leave today') {
+                    statusClass = 'status-leave-today';
+                } else if (status.includes('9 AM - 12 PM')) {
+                    statusClass = 'status-morning-half';
+                } else if (status.includes('12 PM - 4 PM')) {
+                    statusClass = 'status-afternoon-half';
+                } else if (status.includes('one hour')) {
+                    statusClass = 'status-one-hour';
+                } else if (status.includes('45 minutes')) {
+                    statusClass = 'status-45-min';
+                } else if (status.includes('30 minutes')) {
+                    statusClass = 'status-30-min';
+                } else if (status.includes('15 minutes')) {
+                    statusClass = 'status-15-min';
+                } else if (status.includes('2 days')) {
+                    statusClass = 'status-2-days';
+                } else if (status.includes('Saturday/Sunday')) {
+                    statusClass = 'status-weekend';
+                } else if (status.includes('Out time')) {
+                    statusClass = 'status-out-time';
+                }
+                
+                const item = document.createElement('div');
+                item.className = 'logger-item';
+                item.innerHTML = `
+                    <div class="logger-name">${logger.personName}</div>
+                    <div class="logger-info">
+                        <div class="logger-status ${statusClass}">${status}</div>
+                    </div>
+                `;
+                loggerGrid.appendChild(item);
+            });
+        }
+
+        // Initial load
+        refreshAvailability();
+
+        // Refresh every 30 seconds
+        setInterval(refreshAvailability, 30000);
+    </script>
+</body>
+</html>

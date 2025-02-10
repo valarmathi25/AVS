@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Logger</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            width: 100%;
+            min-height: calc(100vh - 70px); /* Account for navbar height */
+        }
+
+        .form-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            max-height: calc(100vh - 140px); /* Account for navbar and padding */
+        }
+
+        h1 {
+            color: #2d3748;
+            margin: 0 0 1.5rem 0;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        #loggerForm {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            height: 100%;
+        }
+
+        .form-group {
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"], 
+        textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        .submit-btn {
+            margin-top: auto;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ba97e 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #2d3748;
+            transform: translateX(-5px);
+        }
+
+        .result {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.95rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .success {
+            background: #c6f6d5;
+            color: #2f855a;
+            opacity: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .success i {
+            color: #2f855a;
+            font-size: 1.2rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-info button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-info button:hover {
+            color: #e2e8f0;
+        }
+    </style>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="dash.html" class="logo">
+            <i class="fas fa-user-clock"></i>
+            Faculty Dashboard
+        </a>
+        <div class="user-info">
+            <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="dash.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+        <div class="form-container">
+            <h1>Add New Logger</h1>
+            <form id="loggerForm">
+                <div class="form-group">
+                    <label for="personName">Name of the Person</label>
+                    <input type="text" id="personName" required placeholder="Enter person's name">
+                </div>
+                <div class="form-group">
+                    <label for="loggerName">Logger Name / Model Number</label>
+                    <input type="text" id="loggerName" required placeholder="e.g., EE2908C">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" required placeholder="Enter description of the logger">
+                </div>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-plus-circle"></i>
+                    Add Logger
+                </button>
+            </form>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function logout() {
+            // Clear any user session data from localStorage if needed
+            if (localStorage.getItem('userEmail')) {
+                localStorage.removeItem('userEmail');
+            }
+            // Redirect to login page
+            window.location.href = 'index.html';
+        }
+
+        // Initialize loggers array in localStorage if it doesn't exist
+        if (!localStorage.getItem('loggers')) {
+            localStorage.setItem('loggers', JSON.stringify([]));
+        }
+
+        document.getElementById('loggerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const personName = document.getElementById('personName').value;
+            const loggerName = document.getElementById('loggerName').value;
+            const description = document.getElementById('description').value;
+
+            // List of possible statuses
+            const statuses = [
+                'Leave today',
+                'Not available for half a day (9 AM - 12 PM)',
+                'Not available for half a day (12 PM - 4 PM)',
+                'Not available for one hour',
+                'Not available for 45 minutes',
+                'Not available for 30 minutes',
+                'Not available for 15 minutes',
+                'Leave for 2 days',
+                'Saturday/Sunday Holiday',
+                'Out time (Cabin closed)'
+            ];
+            
+            // Assign a random status
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+
+            // Create new logger object with initial status
+            const newLogger = {
+                id: Date.now(),
+                personName: personName,
+                loggerName: loggerName,
+                description: description,
+                status: randomStatus,
+                lastUpdate: new Date().toLocaleString(),
+                isActive: true
+            };
+            
+            // Get existing loggers and add new one
+            const loggers = JSON.parse(localStorage.getItem('loggers'));
+            loggers.push(newLogger);
+            localStorage.setItem('loggers', JSON.stringify(loggers));
+            
+            // Show success message
+            const result = document.getElementById('result');
+            result.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                Logger "${loggerName}" has been added successfully for ${personName}! Status will be updated by IoT device.
+            `;
+            result.classList.add('success');
+            
+            // Reset form
+            this.reset();
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                result.classList.remove('success');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
